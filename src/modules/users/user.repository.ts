@@ -16,6 +16,7 @@ export const usersRepository = {
     async updateUser(id:string,userInfo:UpdateUserInfo):Promise<IUser | null>{
         const updateUser = await User.findByIdAndUpdate({ _id: id }, userInfo, {
             returnDocument:'after',
+            runValidators:true,
         });
         return updateUser as unknown as Promise<IUser | null>;
     },
