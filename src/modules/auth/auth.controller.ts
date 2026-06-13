@@ -21,5 +21,18 @@ export const authController = {
         }
     },
 
+    async signin(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { _id, emailId, password } = await authService.signin(req.body);
+            res.status(200).send({
+                message: 'User signed in successfully',
+                userId: _id
+            });
+        } catch (error: unknown) {
+            console.error('Error in signin:', error);
+            next(error);
+        }
+    },
+
 
 };
