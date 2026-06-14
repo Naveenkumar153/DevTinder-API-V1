@@ -1,5 +1,5 @@
-import User, { IUser } from "@/modules/auth/auth.model.js";
 import { SignupRequest } from "@/modules/auth/auth.types.js";
+import User, { IUser } from "@/shared/models/user.model.js";
 import { Document } from "mongoose";
 
 /**

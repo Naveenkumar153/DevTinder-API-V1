@@ -1,6 +1,9 @@
 import bcrypt from "bcryptjs";
-import { authRepository } from "@/modules/auth/auth.repository.js";
+import { ConflictResourceError } from "@/classes/errors.js";
+import { jwtService } from "@/shared/utils/jwt.js";
+import { authConfig } from "@/config/auth.config.js";
 import { SigninRequest, SignupRequest } from "@/modules/auth/auth.types.js";
+import { authRepository } from "@/modules/auth/auth.index.js";
 
 /**
  * Service layer for authentication-related operations.
@@ -13,11 +16,10 @@ export const authService = {
     async signup(signupData: SignupRequest) {
         const existingUser = await authRepository.findByEmail(signupData.emailId);
         if (existingUser) {
-            throw new Error('User already exists');
+            throw new ConflictResourceError('User already exists');
         }
 
         const password = await bcrypt.hash(signupData.password, 15);
-        console.log("password", password);
         signupData.password = password;
 
         const user = await authRepository.createUser(signupData);
@@ -26,15 +28,21 @@ export const authService = {
 
     async signin(signinData: SigninRequest) {
         const user = await authRepository.findByEmail(signinData.emailId);
-        console.log("user", user);
         if (!user) {
-            throw new Error('Invalid email or password');
+            throw new ConflictResourceError('Invalid email or password');
         }
         const isPasswordMatched = await bcrypt.compare(signinData.password, user.password);
-        console.log("isPasswordMatched", isPasswordMatched);
         if (!isPasswordMatched) {
-            throw new Error('Invalid email or password');
+            throw new ConflictResourceError('Invalid email or password');
         }
-        return user;
+
+        // Generate JWT token
+        const idStr = user._id.toString();
+        const token = await jwtService.sign(idStr, authConfig.jwt.secret, {
+            algorithm: authConfig.jwt.algorithm,
+            expiresIn: authConfig.jwt.expiresIn
+        });
+
+        return { user, token };
     },
 };
