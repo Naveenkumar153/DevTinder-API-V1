@@ -7,4 +7,6 @@ router.get('/user', usersController.getUser)
       .delete('/:id', usersController.deleteUser)
       .patch('/:id', usersController.updateUser);
 
-export { router as usersRouter };
+router.get('/user/profile', usersController.getUserProfile);
+
+export { router as usersRouters };
