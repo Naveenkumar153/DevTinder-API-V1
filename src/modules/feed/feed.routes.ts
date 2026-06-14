@@ -5,4 +5,4 @@ const router = Router();
 
 router.get("/feed", feedController.getUsers);
 
-export { router as feedRouter };
+export { router as feedRouters };
