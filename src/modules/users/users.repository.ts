@@ -3,10 +3,6 @@ import { UpdateUserInfo } from "@/shared/types/common.types.js";
 
 
 export const usersRepository = {
-    async getUser(emailId: string): Promise<IUser | null> {
-        const user = await User.findOne({ emailId }).exec();
-        return user as unknown as Promise<IUser | null>
-    },
 
     async deleteUser(id: string): Promise<IUser | null> {
         const deleteUser = await User.findByIdAndDelete(id);
@@ -26,7 +22,7 @@ export const usersRepository = {
         return findUser;
     },
 
-    async getUserProfile(id: string): Promise<IUser | null> {
+    async getUser(id: string): Promise<IUser | null> {
         const user = await User.findById(id).exec();
         return user as unknown as Promise<IUser | null>;
     },
