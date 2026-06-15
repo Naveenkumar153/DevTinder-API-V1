@@ -4,6 +4,7 @@ import { jwtService } from "@/shared/utils/jwt.js";
 import { authConfig } from "@/config/auth.config.js";
 import { SigninRequest, SignupRequest } from "@/modules/auth/auth.types.js";
 import { authRepository } from "@/modules/auth/auth.index.js";
+import { IUser } from "@/shared/models/user.model.js";
 
 /**
  * Service layer for authentication-related operations.
@@ -13,7 +14,7 @@ import { authRepository } from "@/modules/auth/auth.index.js";
 
 export const authService = {
 
-    async signup(signupData: SignupRequest) {
+    async signup(signupData: SignupRequest): Promise<IUser> {
         const existingUser = await authRepository.findByEmail(signupData.emailId);
         if (existingUser) {
             throw new ConflictResourceError('User already exists');
@@ -26,7 +27,7 @@ export const authService = {
         return user;
     },
 
-    async signin(signinData: SigninRequest) {
+    async signin(signinData: SigninRequest): Promise<{ user: IUser, token: string }> {
         const user = await authRepository.findByEmail(signinData.emailId);
         if (!user) {
             throw new ConflictResourceError('Invalid email or password');
@@ -45,4 +46,13 @@ export const authService = {
 
         return { user, token };
     },
+
+    async forgotPassword(emailId: string): Promise<IUser> {
+        const userInfo = await authRepository.forgotPassword(emailId);
+        return userInfo as IUser;
+    },
+
+    async resetPassword(token: string, password: string) {
+
+    }
 };

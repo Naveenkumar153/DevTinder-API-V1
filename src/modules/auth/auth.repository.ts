@@ -16,4 +16,8 @@ export const authRepository = {
         const user = new User(data);
         return user.save() as unknown as Promise<IUser & Document>;
     },
+
+    forgotPassword(emailId: string) {
+        return User.findOne({ emailId }).exec() as Promise<IUser | null>;
+    },
 };

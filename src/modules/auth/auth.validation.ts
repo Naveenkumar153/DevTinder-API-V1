@@ -34,7 +34,7 @@ export const authValidation = {
         }
     },
 
-    async signin(req: Request, res: Response, next: NextFunction) {
+    signin(req: Request, res: Response, next: NextFunction) {
         try {
             const { emailId, password } = req.body as SigninRequest;
             if (!emailId || !password) {
@@ -45,13 +45,25 @@ export const authValidation = {
                 throw new ValidationError('Fields must be less than 100 characters');
             };
 
-            if (!validator.isEmail(req.body.emailId)) {
+            if (!validator.isEmail(emailId)) {
                 throw new ValidationError('Invalid email address');
             }
             next();
         } catch (error: unknown) {
             console.error('Error in authValidation.signup:', error);
             next(error);
+        }
+    },
+
+    checkEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { emailId } = req.body as { emailId: string };
+            if (!validator.isEmail(emailId)) {
+                throw new ValidationError('Invalid email address');
+            }
+            next();
+        } catch (error) {
+
         }
     }
 };

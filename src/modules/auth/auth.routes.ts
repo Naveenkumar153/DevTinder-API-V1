@@ -11,7 +11,9 @@ const router = Router();
  */
 
 router.post('/signup', authValidation.signup, authController.signup)
-    .post('/signin', authValidation.signin, authController.signin);
-// router.post('/forgotpassword', authController.forgotPassword);
+    .post('/signin', authValidation.signin, authController.signin)
+    .post('/logout', authController.logout)
+    .post('/forgotPassword', authValidation.checkEmail, authController.forgotPassword)
+    .post('/resetPassword', authController.resetPassword);
 
 export { router as authRoutes };
