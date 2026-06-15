@@ -9,6 +9,6 @@ export const authConfig: { jwt: Jwt } = {
     jwt: {
         secret: process.env.JWT_SECRET || 'DevTinder@2026',
         algorithm: 'HS256',
-        expiresIn: '30Mintes'
+        expiresIn: '30Minutes'
     }
 };
