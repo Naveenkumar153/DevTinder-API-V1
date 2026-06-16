@@ -37,12 +37,15 @@ const userSchema: mongoose.Schema = new mongoose.Schema<IUser>({
     age: { type: Number, min: 18, validate: { validator: (v: number) => v >= 18, message: 'Age must be greater than 18' } },
     gender: {
         type: String,
-        enum: ['male', 'female', 'others'],
-        maxLength: 10,
-        validate: {
-            validator: (v: string) => ['male', 'female', 'others'].includes(v),
-            message: 'Gender is not valid',
+        enum: {
+            values: ['male', 'female', 'others'],
+            message: `{VALUE} is not a valid gender type`
         },
+        maxLength: 10,
+        // validate: {
+        //     validator: (v: string) => ['male', 'female', 'others'].includes(v),
+        //     message: 'Gender is not valid',
+        // },
     },
     bio: {
         type: String, maxlength: 100,
