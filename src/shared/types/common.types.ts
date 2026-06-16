@@ -7,4 +7,18 @@ export interface UpdateUserInfo {
     skills?: string[];
     about?: string;
     bio?: string;
-}
+};
+
+export enum ConnectionStatus {
+    IGNORE = 'ignore',
+    INTERSTED = 'interested',
+    ACCEPTED = 'accepted',
+    REJECTED = 'rejected',
+};
+
+export const connectionStatus = Object.freeze([
+    ConnectionStatus.IGNORE,
+    ConnectionStatus.INTERSTED,
+    ConnectionStatus.ACCEPTED,
+    ConnectionStatus.REJECTED,
+] as const);
