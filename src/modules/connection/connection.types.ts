@@ -7,6 +7,15 @@ export enum ConnectionValues {
     INTERSTED = 'interested',
 };
 
+export enum ConnectionResponseTypes {
+    ACCEPTED = 'accepted',
+    REJECTED = 'rejected',
+};
+
+export type ConnectionResType = ConnectionResponseTypes.ACCEPTED | ConnectionResponseTypes.REJECTED;
+
+export type StatusType = | ConnectionValues | ConnectionResponseTypes;
+
 export interface ConnectionRequest {
     fromUserId: string,
     toUserId: string,
@@ -16,4 +25,10 @@ export interface ConnectionRequest {
 export interface ConnectionResult {
     message: string,
     connection: IConnection & Document
+};
+
+export interface ConnectionResponse {
+    id: string,
+    toUserId: string,
+    status: string
 };

@@ -1,4 +1,4 @@
-import { ConnectionRequest } from "@/modules/connection/connection.types.js";
+import { ConnectionRequest, ConnectionResponse } from "@/modules/connection/connection.types.js";
 import connectionSchema from "@/shared/models/connection.model.js";
 import type { IConnection } from "@/shared/models/connection.model.js";
 import User from "@/shared/models/user.model.js";
@@ -39,6 +39,20 @@ export const connectionRepository = {
             connectionId,
             { status },
             { new: true, runValidators: true }
+        );
+        return connection as unknown as Promise<IConnection & Document | null>;
+    },
+
+    checkConnectionExist(req: ConnectionResponse): Promise<IConnection & Document | null> {
+        const { id, status, toUserId } = req;
+        const connection = connectionSchema.findOneAndUpdate(
+            {
+                fromUserId: toUserId,
+                toUserId: id,
+                status: ConnectionStatus.INTERSTED
+            },
+            { status },
+            { new: true, runValidators: true, returnDocument: 'after' }
         );
         return connection as unknown as Promise<IConnection & Document | null>;
     },

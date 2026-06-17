@@ -6,6 +6,6 @@ import { Router } from "express";
 const router = Router();
 
 router.post('/request/send/:status/:toUserId', connectionValidations.request, connectionController.connectionRequest)
-    .post('/connection/reponse', connectionController.connectionResponse);
+    .post('/request/review/:status/:toUserId', connectionValidations.response, connectionController.connectionResponse);
 
 export { router as connectionRouters };

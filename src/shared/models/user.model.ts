@@ -21,7 +21,7 @@ const userSchema: mongoose.Schema = new mongoose.Schema<IUser>({
     firstName: { type: String, required: true, maxLength: 50 },
     lastName: { type: String, required: true, maxLength: 50 },
     emailId: {
-        type: String, required: true, unique: true, lowercase: true, trim: true, maxLength: 50,
+        type: String, required: true, unique: true, lowercase: true, trim: true, maxLength: 50, index: true,
         validate: {
             validator: (v: string) => validator.isEmail(v),
             message: 'Please enter a valid email'

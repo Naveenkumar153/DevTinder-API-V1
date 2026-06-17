@@ -1,6 +1,6 @@
-import { ConflictError, NotFoundError } from "@/classes/errors.js";
+import { BadRequestError, ConflictError, NotFoundError } from "@/classes/errors.js";
 import { connectionRepository } from "@/modules/connection/connection.repository.js";
-import { ConnectionRequest, ConnectionResult, ConnectionValues } from "@/modules/connection/connection.types.js";
+import { ConnectionRequest, ConnectionResponse, ConnectionResponseTypes, ConnectionResult, ConnectionValues } from "@/modules/connection/connection.types.js";
 import { ConnectionStatus } from "@/shared/types/common.types.js";
 
 
@@ -46,5 +46,13 @@ export const connectionService = {
                 connection
             };
         }
+    },
+
+    async connectionResponse(req: ConnectionResponse) {
+        const connectionExist = await connectionRepository.checkConnectionExist(req);
+        if (!connectionExist?._id) {
+            throw new BadRequestError('Connection request not found');
+        }
+        return connectionExist;
     },
 };
