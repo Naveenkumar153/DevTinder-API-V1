@@ -57,4 +57,35 @@ export const usersController = {
             next(error);
         }
     },
+
+
+
+    async connectionRequests(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const userId = req.id as string;
+            const connections = await usersService.getUserConnections(userId);
+            res.status(200).json({
+                message: 'Connection get successfully',
+                data: connections
+            })
+        } catch (error) {
+            console.error('connectionRequests', error);
+            next(error);
+        }
+    },
+
+    async getAcceptedConections(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const userId = req.id as string;
+            const connections = await usersService.getAcceptedConections(userId);
+            res.status(200).json({
+                message: 'Connection get successfully',
+                data: connections
+            })
+        } catch (error) {
+            console.error('connectionRequests', error);
+            next(error);
+        }
+    },
+
 };

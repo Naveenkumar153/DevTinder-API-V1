@@ -1,5 +1,7 @@
+import { connectionSchema } from "@/modules/connection/connection.index.js";
+import { IConnection } from "@/shared/models/connection.model.js";
 import User, { IUser } from "@/shared/models/user.model.js";
-import { UpdateUserInfo } from "@/shared/types/common.types.js";
+import { ConnectionStatus, UpdateUserInfo } from "@/shared/types/common.types.js";
 
 
 export const usersRepository = {
@@ -25,5 +27,26 @@ export const usersRepository = {
     async getUser(id: string): Promise<IUser | null> {
         const user = await User.findById(id).exec();
         return user as unknown as Promise<IUser | null>;
+    },
+
+    async getUserConnections(id: string): Promise<IConnection & Document | null> {
+        const connections = await connectionSchema.find({
+            toUserId: id,
+            status: ConnectionStatus.INTERSTED
+        }).populate('fromUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio']).exec() as unknown as Promise<IConnection & Document | null>
+        return connections;
+    },
+
+    async getAcceptedConections(id: string): Promise<IConnection & Document | null> {
+        let connections = await connectionSchema.find({
+            $or: [
+                { toUserId: id, status: ConnectionStatus.ACCEPTED },
+                { fromUserId: id, status: ConnectionStatus.ACCEPTED },
+            ]
+        })
+            .populate('fromUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio'])
+            .populate('toUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio'])
+            .exec() as unknown as Promise<IConnection & Document | null>;
+        return connections;
     },
 };

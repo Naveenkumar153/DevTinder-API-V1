@@ -13,11 +13,13 @@ export interface IConnection {
 const connectionSchema: mongoose.Schema = new mongoose.Schema<IConnection>({
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'User',
     },
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        ref: 'User'
     },
     status: {
         type: String,
