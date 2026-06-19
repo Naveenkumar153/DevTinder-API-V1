@@ -6,7 +6,8 @@ import { NextFunction, Request, Response } from "express";
 export const feedController = {
     async getUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const allUsers = await feedService.getUsers();
+            const loginUser = req.id;
+            const allUsers = await feedService.getUsers(loginUser);
             res.status(200).send({
                 data: allUsers,
                 message: 'Users get successfully'
