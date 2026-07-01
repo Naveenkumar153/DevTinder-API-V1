@@ -25,7 +25,8 @@ export const usersRepository = {
     },
 
     async getUser(id: string): Promise<IUser | null> {
-        const user = await User.findById(id).exec();
+        const includeFileds = ['firstName', 'lastName', 'age', 'about', 'gender', 'bio', 'profilePicture', 'skills'];
+        const user = await User.findById(id).select(includeFileds).exec();
         return user as unknown as Promise<IUser | null>;
     },
 

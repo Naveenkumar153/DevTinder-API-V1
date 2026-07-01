@@ -42,10 +42,6 @@ const userSchema: mongoose.Schema = new mongoose.Schema<IUser>({
             message: `{VALUE} is not a valid gender type`
         },
         maxLength: 10,
-        // validate: {
-        //     validator: (v: string) => ['male', 'female', 'others'].includes(v),
-        //     message: 'Gender is not valid',
-        // },
     },
     bio: {
         type: String, maxlength: 100,
