@@ -22,7 +22,7 @@ export const usersService = {
         return usersRepository.getUserConnections(id);
     },
 
-    async getAcceptedConections(id: string): Promise<IConnection & Document | null> {
-        return usersRepository.getAcceptedConections(id);
+    async getAcceptedConections(id: string): Promise<(IUser & Document)[]> {
+        return usersRepository.getAcceptedConections(id) as unknown as Promise<(IUser & Document)[]>;
     },
 };

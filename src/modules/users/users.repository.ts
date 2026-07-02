@@ -34,20 +34,27 @@ export const usersRepository = {
         const connections = await connectionSchema.find({
             toUserId: id,
             status: ConnectionStatus.INTERSTED
-        }).populate('fromUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio']).exec() as unknown as Promise<IConnection & Document | null>
+        })
+            .select(['fromUserId', 'toUserId', 'status', '_id'])
+            .populate('fromUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio']).exec() as unknown as Promise<IConnection & Document | null>
         return connections;
     },
 
-    async getAcceptedConections(id: string): Promise<IConnection & Document | null> {
-        let connections = await connectionSchema.find({
+    async getAcceptedConections(id: string): Promise<(IUser & Document)[]> {
+        const connections = await connectionSchema.find({
             $or: [
                 { toUserId: id, status: ConnectionStatus.ACCEPTED },
                 { fromUserId: id, status: ConnectionStatus.ACCEPTED },
             ]
         })
+            .select(['fromUserId', 'toUserId', 'status', '_id'])
             .populate('fromUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio'])
             .populate('toUserId', ['firstName', 'lastName', 'profilePicture', 'age', 'about', 'skills', 'bio'])
-            .exec() as unknown as Promise<IConnection & Document | null>;
-        return connections;
+            .exec() as unknown as (IConnection & Document)[];
+
+        return connections.map((row) =>
+            row.fromUserId._id.toString() === id.toString() ? row.toUserId : row.fromUserId
+        ) as unknown as (IUser & Document)[];
     },
+
 };

@@ -7,7 +7,7 @@ const router = Router();
 router.get('/user/view', usersController.getUser);
 router.delete('/user/delete', usersController.deleteUser);
 router.patch('/user/update', usersValidation.updateUser, usersController.updateUser);
-router.post('/user/requests/received', usersController.connectionRequests);
-router.post('/user/connections', usersController.getAcceptedConections);
+router.get('/user/requests/received', usersController.connectionRequests);
+router.get('/user/connections', usersController.getAcceptedConections);
 
 export { router as usersRouters };
