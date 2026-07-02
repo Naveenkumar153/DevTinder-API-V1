@@ -50,12 +50,12 @@ const userSchema: mongoose.Schema = new mongoose.Schema<IUser>({
     profilePicture: {
         type: String,
         default: 'https://cdn.vectorstock.com/i/500p/29/52/faceless-male-avatar-in-hoodie-vector-56412952.jpg', validate: {
-            validator: (v: string) => v.length <= 100, message: 'Profile picture must be less than 100 characters'
+            validator: (v: string) => v.length <= 250, message: 'Profile picture must be less than 250 characters'
         }
     },
     about: {
-        type: String, default: "Hello User", maxlength: 150,
-        validate: { validator: (v: string) => v.length <= 150, message: 'About must be less than 150 characters' }
+        type: String, default: "Hello User", maxlength: 300,
+        validate: { validator: (v: string) => v.length <= 300, message: 'About must be less than 300 characters' }
     },
     skills: {
         type: [String], maxlength: 50,

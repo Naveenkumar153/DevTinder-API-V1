@@ -11,10 +11,14 @@ import { Request, Response, NextFunction } from "express";
 export const authController = {
     async signup(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const result = await authService.signup(req.body);
+            const { user, token } = await authService.signup(req.body);
+            res.cookie('token', token, {
+                httpOnly: true,
+                expires: new Date(Date.now() + 1 * 3600000) // 1 hour
+            });
             res.status(201).send({
                 message: 'User created successfully',
-                userId: result._id
+                user,
             });
         } catch (error: unknown) {
             console.error('Error in signup:', error);
@@ -31,7 +35,7 @@ export const authController = {
             });
             res.status(200).send({
                 message: 'User signed in successfully',
-                userId: user._id
+                user,
             });
         } catch (error: unknown) {
             console.error('Error in signin:', error);

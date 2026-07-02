@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import { ConflictResourceError } from "@/classes/errors.js";
 import { jwtService } from "@/shared/utils/jwt.js";
-import { authConfig } from "@/config/auth.config.js";
 import { SigninRequest, SignupRequest } from "@/modules/auth/auth.types.js";
 import { authRepository } from "@/modules/auth/auth.index.js";
 import { IUser } from "@/shared/models/user.model.js";
@@ -9,12 +8,19 @@ import { IUser } from "@/shared/models/user.model.js";
 /**
  * Service layer for authentication-related operations.
  * Handles business logic and interacts with the repository layer.
- * 
+ *
  */
+
+type SafeUser = Omit<IUser, 'password' | 'createdAt' | 'updatedAt' | '__v'>;
+
+function toSafeUser(user: IUser): SafeUser {
+    const { password, createdAt, updatedAt, __v, ...safeUser } = user.toObject();
+    return safeUser;
+}
 
 export const authService = {
 
-    async signup(signupData: SignupRequest): Promise<IUser> {
+    async signup(signupData: SignupRequest): Promise<{ user: SafeUser, token: string }> {
         const existingUser = await authRepository.findByEmail(signupData.emailId);
         if (existingUser) {
             throw new ConflictResourceError('User already exists');
@@ -24,10 +30,14 @@ export const authService = {
         signupData.password = password;
 
         const user = await authRepository.createUser(signupData);
-        return user;
+
+        // Generate JWT token
+        const idStr = user._id.toString();
+        const token = await jwtService.generateToken(idStr);
+        return { user: toSafeUser(user), token };
     },
 
-    async signin(signinData: SigninRequest): Promise<{ user: IUser, token: string }> {
+    async signin(signinData: SigninRequest): Promise<{ user: SafeUser, token: string }> {
         const user = await authRepository.findByEmail(signinData.emailId);
         if (!user) {
             throw new ConflictResourceError('Invalid email or password');
@@ -39,12 +49,8 @@ export const authService = {
 
         // Generate JWT token
         const idStr = user._id.toString();
-        const token = await jwtService.sign(idStr, authConfig.jwt.secret, {
-            algorithm: authConfig.jwt.algorithm,
-            expiresIn: authConfig.jwt.expiresIn
-        });
-
-        return { user, token };
+        const token = await jwtService.generateToken(idStr);
+        return { user: toSafeUser(user), token };
     },
 
     async forgotPassword(emailId: string): Promise<IUser> {

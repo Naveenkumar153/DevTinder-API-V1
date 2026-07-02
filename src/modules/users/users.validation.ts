@@ -38,8 +38,8 @@ export const usersValidation = {
                 throw new BadRequestError('Skills must be less than 50 characters');
             };
 
-            if (userInfo.about && userInfo.about.length > 150) {
-                throw new BadRequestError('About must be less than 150 characters');
+            if (userInfo.about && userInfo.about.length > 300) {
+                throw new BadRequestError('About must be less than 300 characters');
             };
 
             if (userInfo.bio && userInfo.bio.length > 100) {

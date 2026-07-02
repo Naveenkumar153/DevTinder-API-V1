@@ -6,7 +6,6 @@ import { Document } from "mongoose";
  * Repository layer for authentication-related database operations.
  * Interacts directly with the database models.
  */
-
 export const authRepository = {
     findByEmail(email: string): Promise<IUser | null> {
         return User.findOne({ emailId: email }).exec() as Promise<IUser | null>;
