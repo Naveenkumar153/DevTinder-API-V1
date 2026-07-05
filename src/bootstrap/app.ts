@@ -10,12 +10,34 @@ import { connectionRouters } from '@/modules/connection/connection.index.js';
 
 const app: express.Application = express();
 
+const whitelist = [
+    "https://connecttinder.cc",           // prod
+    "https://www.connecttinder.cc",
+    "http://localhost:5173",
+    "http://40.192.110.18:3000",
+    ...(process.env.CORS_ORIGIN?.split(',') ?? [])
+];
+
+const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+};
+
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-}));
+app.use(cors(corsOptions));
+app.get('/health', (_req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 app.use('/api', authRoutes);
 app.use('/api', authMiddleware.checkToken, feedRouters);
 app.use('/api', authMiddleware.checkToken, usersRouters);
